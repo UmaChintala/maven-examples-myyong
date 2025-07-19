@@ -8,10 +8,12 @@ trigger:
 
 pool:
   vmImage: ubuntu-latest
-
+variables:
+  working-dir: 'maven-examples-myyong/maven-mutation-testing'
 steps:
 - task: JFrogMaven@1
   inputs:
+    workingDirectory: $(working-dir)
     mavenPomFile: 'pom.xml'
     goals: 'install'
     artifactoryResolverService: 'adoptionplus'
