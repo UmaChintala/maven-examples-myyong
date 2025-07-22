@@ -10,7 +10,25 @@ pool:
   vmImage: ubuntu-latest
 variables:
   working-dir: 'maven-examples-myyong/maven-mutation-testing'
+  
 steps:
+- checkout: self
+- task: Bash@3
+  displayName: 'Diagnose: List Source Directory Contents'
+  inputs:
+    targetType: 'inline'
+    script: |
+      echo "Current working directory on agent: $(pwd)"
+      echo "Build.SourcesDirectory: $(Build.SourcesDirectory)"
+      echo "--- Contents of $(Build.SourcesDirectory) ---"
+      ls -R $(Build.SourcesDirectory) # Recursively list all files and folders
+      echo "--- End of listing ---"
+
+- task: JFrogCLI@2
+  displayName: 'Build and Publish with JFrog CLI'
+  inputs:
+    jfrogService: 'YourServiceConnectionName' # Make sure this is correct
+    command: 'jf mvn install -f "$(Build.SourcesDirectory)/pom.xml" --build-name="UmaChintala.maven-examples-myyong" --build-number="$(Build.BuildNumber)"'
 - task: JFrogMaven@1
   inputs:
     workingDirectory: $(working-dir)
